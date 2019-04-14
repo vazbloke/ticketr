@@ -40,7 +40,7 @@
                         @click="onDeleteBook(book)">
                     Delete
                 </button>
-                <router-link :to="`/order/${book.id}`"
+                <router-link :to="`/order/${book._id}`"
                              class="btn btn-primary btn-sm">
                     Purchase
                 </router-link>
@@ -232,11 +232,11 @@ export default {
       this.addBookForm.author = '';
       this.addBookForm.read = [];
       this.addBookForm.price = '';
-      this.editForm.id = '';
+      this.editForm._id = '';
       this.editForm.title = '';
       this.editForm.author = '';
       this.editForm.read = [];
-      this.editForm.id = '';
+      this.editForm._id = '';
     },
     onSubmit(evt) {
       evt.preventDefault();
@@ -263,7 +263,7 @@ export default {
         read, // property shorthand
         price: this.editForm.price,
       };
-      this.updateBook(payload, this.editForm.id);
+      this.updateBook(payload, this.editForm._id);
     },
     onReset(evt) {
       evt.preventDefault();
@@ -277,7 +277,7 @@ export default {
       this.getBooks(); // why?
     },
     onDeleteBook(book) {
-      this.removeBook(book.id);
+      this.removeBook(book._id);
     },
     editBook(book) {
       this.editForm = book;

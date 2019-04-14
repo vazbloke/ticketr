@@ -1,0 +1,24 @@
+
+
+[
+   {
+      "title": "On the Road",
+      "author": "Jack Kerouac",
+      "read": true,
+      "price": "19.99"
+   },
+   {
+      "title": "Harry Potter and the Philosopher's Stone",
+      "author": "J. K. Rowling",
+      "read": false,
+      "price": "9.99"
+   },
+   {
+      "title": "Green Eggs and Ham",
+      "author": "Dr. Seuss",
+      "read": true,
+      "price": "3.99"
+   }
+]
+
+
