@@ -11,17 +11,31 @@ import requests, json
 
 # Making connection to locally hosted MongoDB
 client = MongoClient('mongodb://localhost:27017/')
-db = client.northpark
+db = client["northpark"]
 
 collist = db.list_collection_names()
 if "books" in collist:
     db.books.drop()
+if "data" in collist:
+    db.data.drop()
+if "user" in collist:
+    db.user.drop()
 
 BOOKS = db["books"]
+DATA = db["data"]
+USER = db["user"]
 
 with open("books.json") as f:
     booksdata = json.load(f)
 BOOKS.insert_many(booksdata)
+
+with open("Sample Data.json") as f:
+    datadata = json.load(f)
+DATA.insert_many(datadata)
+
+with open("User.json") as f:
+    userdata = json.load(f)
+USER.insert_many(userdata)
 
 # configuration
 DEBUG = True
@@ -44,8 +58,6 @@ def all_books():
     response_object = {'status': 'success'}
     if request.method == 'POST':
         post_data = request.get_json()
-        print(post_data)
-        print("la")
         new_item = {
             'title': post_data.get('title'),
             'author': post_data.get('author'),
@@ -63,49 +75,45 @@ def all_books():
         response_object['books'] = all_books
     return jsonify(response_object)
 
-
-@app.route('/books/<book_id>', methods=['GET', 'PUT', 'DELETE'])
-def single_book(book_id):
+@app.route('/data', methods=['GET', 'POST'])
+def get_all_data():
     response_object = {'status': 'success'}
-    if request.method == 'GET':
-        # TODO: refactor to a lambda and filter
-        return_book = ''
-        obj = BOOKS.find_one({'_id': ObjectId(book_id)})
-        obj["_id"] = str(i["_id"])
-        response_object['book'] = obj
-    if request.method == 'PUT':
+    if request.method == 'POST':
         post_data = request.get_json()
-        BOOKS.delete_one({ "_id":ObjectId(book_id)})
+
+        # don't do this. Just repalce _id and send
         new_item = {
-            'title': post_data.get('title'),
-            'author': post_data.get('author'),
-            'read': post_data.get('read'),
-            'price': post_data.get('price')
+            'Requestor': post_data.get('Requestor'),
+            'ITOwner': post_data.get('ITOwner'),
+            'read': post_data.get('FiledAgainst'),
+            'price': post_data.get('Severity'),
+            'Priority': post_data.get('Priority')
         }
+        print(new_item)
         BOOKS.insert_one(new_item)
-        response_object['message'] = 'Book updated!'
-    if request.method == 'DELETE':
-        BOOKS.delete_one({ "_id":ObjectId(book_id)})
-        response_object['message'] = 'Book removed!'
+        response_object['message'] = 'Book added!'
+    else:
+        limit = int(request.args.get('limit'))
+        page_skip = int(request.args.get('page'))*limit
+        pymongo_cursor = DATA.find().skip(page_skip).limit(limit)
+        all_data = list(pymongo_cursor)
+        for i in all_data:
+            i["_id"] = str(i["_id"])
+        response_object['ret_data'] = all_data
     return jsonify(response_object)
 
 
-@app.route('/charge', methods=['POST'])
-def create_charge():
-    response_object = {
-        'status': 'success',
-        'charge': 0
-    }
-    return jsonify(response_object), 200
-
-
-@app.route('/charge/<charge_id>')
-def get_charge(charge_id):
-    response_object = {
-        'status': 'success',
-        'charge': 0
-    }
-    return jsonify(response_object), 200
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    post_data = request.get_json()
+    print(post_data)
+    result = USER.find_one({'id': post_data.get('id')})
+    # if not result:
+    #     return jsonify({'status': 'fail'}), 401
+    if result['password'] == post_data.get('password'):
+        return jsonify({'status': 'success'}), 200
+    # else:
+    #     return jsonify({'status': 'fail'}), 401
 
 if __name__ == '__main__':
     app.run()

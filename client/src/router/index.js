@@ -4,13 +4,15 @@ import Ping from '@/components/Ping';
 import Books from '@/components/Books';
 import Order from '@/components/Order';
 import OrderComplete from '@/components/OrderComplete';
+import Data from '@/components/Data';
+import login from '@/components/login';
 
 Vue.use(Router);
 
 export default new Router({
   routes: [
     {
-      path: '/',
+      path: '/books',
       name: 'Books',
       component: Books,
     },
@@ -29,6 +31,16 @@ export default new Router({
       name: 'Ping',
       component: Ping,
     },
+    {
+      path: '/data',
+      name: 'Data',
+      component: Data,
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: login,
+    },
   ],
-  mode: 'hash',
+  mode: 'history',
 });
