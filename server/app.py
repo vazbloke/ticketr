@@ -1,5 +1,5 @@
-import os
-from bson import json_util, ObjectId
+import os, re
+from bson import json_util, ObjectId, regex
 
 # import stripe
 from flask import Flask, jsonify, request
@@ -14,20 +14,13 @@ client = MongoClient('mongodb://localhost:27017/')
 db = client["northpark"]
 
 collist = db.list_collection_names()
-if "books" in collist:
-    db.books.drop()
 if "data" in collist:
     db.data.drop()
 if "user" in collist:
     db.user.drop()
 
-BOOKS = db["books"]
 DATA = db["data"]
 USER = db["user"]
-
-with open("books.json") as f:
-    booksdata = json.load(f)
-BOOKS.insert_many(booksdata)
 
 with open("Sample Data.json") as f:
     datadata = json.load(f)
@@ -52,54 +45,33 @@ CORS(app)
 def ping_pong():
     return jsonify('pong!')
 
-
-@app.route('/books', methods=['GET', 'POST'])
-def all_books():
-    response_object = {'status': 'success'}
-    if request.method == 'POST':
-        post_data = request.get_json()
-        new_item = {
-            'title': post_data.get('title'),
-            'author': post_data.get('author'),
-            'read': post_data.get('read'),
-            'price': post_data.get('price')
-        }
-        print(new_item)
-        BOOKS.insert_one(new_item)
-        response_object['message'] = 'Book added!'
-    else:
-        pymongo_cursor = BOOKS.find()
-        all_books = list(pymongo_cursor)
-        for i in all_books:
-            i["_id"] = str(i["_id"])
-        response_object['books'] = all_books
-    return jsonify(response_object)
-
-@app.route('/data', methods=['GET', 'POST'])
+@app.route('/ticketdata', methods=['GET', 'POST'])
 def get_all_data():
     response_object = {'status': 'success'}
-    if request.method == 'POST':
-        post_data = request.get_json()
-
-        # don't do this. Just repalce _id and send
-        new_item = {
-            'Requestor': post_data.get('Requestor'),
-            'ITOwner': post_data.get('ITOwner'),
-            'read': post_data.get('FiledAgainst'),
-            'price': post_data.get('Severity'),
-            'Priority': post_data.get('Priority')
-        }
-        print(new_item)
-        BOOKS.insert_one(new_item)
-        response_object['message'] = 'Book added!'
-    else:
-        limit = int(request.args.get('limit'))
-        page_skip = int(request.args.get('page'))*limit
-        pymongo_cursor = DATA.find().skip(page_skip).limit(limit)
+    if request.method == 'GET':
+        sortSelected, searchSelected, searchValue = \
+            request.args.get('sortSelected'), request.args.get('searchSelected'), request.args.get('searchValue')
+        limit, searchkey = int(request.args.get('limit')), {}
+        page_skip = int(request.args.get('currentPage'))*limit
+        if(not(searchSelected == '' or searchValue == '')):
+            searchkey = {searchSelected:searchValue}
+        
+        if(sortSelected != ''):
+            sortkey = [(sortSelected,int(request.args.get('sortOrder')))]
+            pymongo_cursor = DATA.find(searchkey).sort(sortkey).skip(page_skip).limit(limit)
+        else:
+            pymongo_cursor = DATA.find(searchkey).skip(page_skip).limit(limit)
+        
         all_data = list(pymongo_cursor)
         for i in all_data:
             i["_id"] = str(i["_id"])
-        response_object['ret_data'] = all_data
+        response_object['ticket_data'] = all_data
+    else:
+        post_data = request.get_json()
+        new_item = json.loads(post_data)
+        new_item["_id"] = ObjectId(new_item["_id"])
+        BOOKS.insert_one(new_item)
+        response_object['message'] = 'Book added!'
     return jsonify(response_object)
 
 

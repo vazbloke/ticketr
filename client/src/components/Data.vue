@@ -1,116 +1,59 @@
 <template>
-  <div class="container">
-    <div class="row">
-      <div class="col-sm-10">
-        <h1>Data</h1>
-        <hr><br><br>
-        <br><br>
-
-        <div>
-            <b-table striped hover :items="ret_data" :fields="fields">
-                <template slot="Actions" slot-scope="row">
-                    <b-button size="sm" @click="row.toggleDetails">
-                    {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
-                    </b-button>
-                </template>
-            </b-table>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- <b-modal ref="editDataModal"
-             id="data-edit-modal"
-             title="Edit"
-             hide-footer>
-      <b-form @submit="onSubmitUpdate" @reset="onResetUpdate" class="w-100">
-        <td>{{ item.Requestor }}</td>
-              <td>{{ item.ITOwner }}</td>
-              <td>{{ item.FiledAgainst }}</td>
-              <td>{{ item.Severity }}</td>
-              <td>{{ item.Priority }}</td>
-        <b-form-group id="form-title-edit-group"
-                      label="ID:"
-                      label-for="form-title-edit-input">
-          <b-form-input id="form-id-edit-input"
-                        type="text"
-                        v-model="editForm._id"
-                        required
-                        placeholder="Enter ID"
-                        disabled>
-          </b-form-input>
-        </b-form-group>
-        <b-form-group id="form-title-edit-group"
-                      label="Requestor:"
-                      label-for="form-title-edit-input">
-          <b-form-input id="form-requestor-edit-input"
-                        type="text"
-                        v-model="editForm.Requestor"
-                        required
-                        placeholder="Enter Requestor"
-                        disabled>
-          </b-form-input>
-        </b-form-group>
-        <b-form-group id="form-title-edit-group"
-                      label="ITOwner:"
-                      label-for="form-title-edit-input">
-          <b-form-input id="form-itowner-edit-input"
-                        type="text"
-                        v-model="editForm.ITOwner"
-                        required
-                        placeholder="Enter ITOwner"
-                        disabled>
-          </b-form-input>
-        </b-form-group>
-        <b-form-group id="form-title-edit-group"
-                      label="FiledAgainst:"
-                      label-for="form-title-edit-input">
-          <b-form-input id="form-filedagainst-edit-input"
-                        type="text"
-                        v-model="editForm.FiledAgainst"
-                        required
-                        placeholder="Enter FiledAgainst"
-                        disabled>
-          </b-form-input>
-        </b-form-group>
-        <b-form-group id="form-title-edit-group"
-                      label="Severity:"
-                      label-for="form-title-edit-input">
-          <b-form-input id="form-severity-edit-input"
-                        type="text"
-                        v-model="editForm.Severity"
-                        required
-                        placeholder="Enter Severity"
-                        disabled>
-          </b-form-input>
-        </b-form-group>
-        <b-form-group id="form-title-edit-group"
-                      label="Priority:"
-                      label-for="form-title-edit-input">
-          <b-form-input id="form-priority-edit-input"
-                        type="text"
-                        v-model="editForm.Priority"
-                        required
-                        placeholder="Enter Priority"
-                        disabled>
-          </b-form-input>
-        </b-form-group>
+    <div>
+        <BaseNavbar />
         
-        <b-button type="submit" variant="primary">Update</b-button>
-        <b-button type="reset" variant="danger">Cancel</b-button>
-      </b-form>
-    </b-modal> -->
-  </div>
+        <div class="container">
+            <br>
+            <h2>Data</h2>
+            <b-row>
+                <b-col>
+                    <b-nav-form class="mt-0">
+                        <b-input-group prepend="Sort By">
+                            <b-form-select @change="getData" v-model="sortSelected" :options="options" />
+                            <b-form-select @change="getData" v-model="sortOrder" :options="sortOrders" />
+                        </b-input-group>
+                    </b-nav-form>
+                </b-col>
+                <b-col>
+                    <b-nav-form class="mt-0">
+                        <b-input-group class="float-right">
+                            <b-form-select v-model="searchSelected" :options="options" />
+                                <b-input-group-append>
+                                    <b-form-input v-model="searchValue" type="text" placeholder="Search Value"/>
+                                    <b-button @click="getData" variant="info">Search</b-button>
+                                </b-input-group-append>
+                        </b-input-group>
+                    </b-nav-form>
+                </b-col>
+            </b-row>
+            <div class="row">
+                <div class="col-sm-10">
+                    <br>
+                    <div>
+                        <b-table striped hover :items="ticket_data" :fields="fields">
+                            <template slot="Actions" slot-scope="row">
+                                <b-button size="sm" @click="row.toggleDetails">
+                                {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
+                                </b-button>
+                            </template>
+                        </b-table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <BaseFooter /> -->
+    </div>
 </template>
 
 <script>
 import axios from 'axios';
-import Alert from './Alert';
+import BaseNavbar from './BaseNavbar';
+// import BaseFooter from './BaseFooter';
 
 export default {
   data() {
     return {
-      ret_data: [],
+      ticket_data: [],
       editForm: {
         _id: '',
         Requestor: '',
@@ -119,27 +62,44 @@ export default {
         Severity: [],
         Priority: '',
       },
+      currentPage: 1,
       message: '',
       showMessage: false,
       // Use these as parameters
       page: 1,
-      limit: 10,
+      limit: 20,
       sortSelected: '',
-      sortOrder: '', // -1 and 1. Asc and Desc (Write logic for that)
+      sortOrder: 1, // -1 and 1. Asc and Desc (Write logic for that)
       searchValue: '',
-      searchField: '',
-      fields: ['Requestor', 'ITOwner', 'FiledAgainst', 'Severity', 'Priority', 'Actions']
+      searchSelected: '',
+      fields: ['Requestor', 'TicketType', 'FiledAgainst', 'Severity', 'Priority', 'daysOpen', 'Actions'],
+      limit: 20,
+      options: [
+            { value: '', text: 'None' },
+            { value: 'ticket', text: 'ID' },
+            { value: 'category', text: 'Category' },
+            { value: 'Severity', text: 'Severity' },
+            { value: 'Priority', text: 'Priority' },
+            { value: 'TicketType', text: 'Type' },
+            { value: 'daysOpen', text: 'Days Open' }
+          ],
+          sortOrders:[
+            { value: '1', text: 'Asc' },
+            { value: '-1', text: 'Desc' }
+          ]
     };
   },
   components: {
-    alert: Alert,
+    BaseNavbar: BaseNavbar,
   },
   methods: {
     getData() {
-      const path = 'http://localhost:5000/data?page=1&limit=10';
+      let path = `http://localhost:5000/ticketdata?&currentPage=${this.currentPage}&limit=${this.limit}` + 
+                `&sortSelected=${this.sortSelected}&sortOrder=${this.sortOrder}` + 
+                `&searchSelected=${this.searchSelected}&searchValue=${this.searchValue}`;
       axios.get(path)
         .then((res) => {
-          this.ret_data = res.data.ret_data;
+          this.ticket_data = res.data.ticket_data;
         })
         .catch((error) => {
           // eslint-disable-next-line
