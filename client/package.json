@@ -1,8 +1,8 @@
 {
-  "name": "client",
+  "name": "northpark-task",
   "version": "1.0.0",
   "description": "A Vue.js project",
-  "author": "Michael Herman michael@mherman.org",
+  "author": "Aditya Manoharan <adityavazhipokkil@gmail.com>",
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",

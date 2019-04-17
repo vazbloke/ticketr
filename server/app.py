@@ -1,5 +1,5 @@
-import os, re
-from bson import json_util, ObjectId, regex
+import os
+from bson import json_util, ObjectId
 
 # import stripe
 from flask import Flask, jsonify, request
@@ -9,28 +9,8 @@ from flask import Flask, render_template, redirect, url_for, request, jsonify
 from pymongo import MongoClient
 import requests, json
 
-# Making connection to locally hosted MongoDB
-client = MongoClient('mongodb://localhost:27017/')
-db = client["northpark"]
+print("Hi")
 
-collist = db.list_collection_names()
-if "data" in collist:
-    db.data.drop()
-if "user" in collist:
-    db.user.drop()
-
-DATA = db["data"]
-USER = db["user"]
-
-with open("Sample Data.json") as f:
-    datadata = json.load(f)
-DATA.insert_many(datadata)
-
-with open("User.json") as f:
-    userdata = json.load(f)
-USER.insert_many(userdata)
-
-# configuration
 DEBUG = True
 
 # instantiate the app
@@ -40,10 +20,28 @@ app.config.from_object(__name__)
 # enable CORS
 CORS(app)
 
-# sanity check route
+client = MongoClient('mongodb://localhost:27017/')
+db = client["northpark"]
+
+DATA = db["data"]
+USER = db["user"]
+
+
 @app.route('/ping', methods=['GET'])
 def ping_pong():
     return jsonify('pong!')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    post_data = request.get_json()
+    print(post_data)
+    result = USER.find_one({'id': post_data.get('id')})
+    # if not result:
+    #     return jsonify({'status': 'fail'}), 401
+    if result['password'] == post_data.get('password'):
+        return jsonify({'status': 'success'}), 200
+    # else:
+    #     return jsonify({'status': 'fail'}), 401
 
 @app.route('/ticketdata', methods=['GET', 'POST'])
 def get_all_data():
@@ -75,17 +73,5 @@ def get_all_data():
     return jsonify(response_object)
 
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    post_data = request.get_json()
-    print(post_data)
-    result = USER.find_one({'id': post_data.get('id')})
-    # if not result:
-    #     return jsonify({'status': 'fail'}), 401
-    if result['password'] == post_data.get('password'):
-        return jsonify({'status': 'success'}), 200
-    # else:
-    #     return jsonify({'status': 'fail'}), 401
-
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0')

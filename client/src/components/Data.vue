@@ -9,15 +9,15 @@
                 <b-col>
                     <b-nav-form class="mt-0">
                         <b-input-group prepend="Sort By">
-                            <b-form-select @change="getData" v-model="sortSelected" :options="options" />
-                            <b-form-select @change="getData" v-model="sortOrder" :options="sortOrders" />
+                            <b-form-select @change="getData" v-model="sortSelected" :options="selectOptions" />
+                            <b-form-select @change="getData" v-model="sortOrder" :options="sortOptions" />
                         </b-input-group>
                     </b-nav-form>
                 </b-col>
                 <b-col>
                     <b-nav-form class="mt-0">
                         <b-input-group class="float-right">
-                            <b-form-select v-model="searchSelected" :options="options" />
+                            <b-form-select v-model="searchSelected" :options="selectOptions" />
                                 <b-input-group-append>
                                     <b-form-input v-model="searchValue" type="text" placeholder="Search Value"/>
                                     <b-button @click="getData" variant="info">Search</b-button>
@@ -65,8 +65,6 @@ export default {
       currentPage: 1,
       message: '',
       showMessage: false,
-      // Use these as parameters
-      page: 1,
       limit: 20,
       sortSelected: '',
       sortOrder: 1, // -1 and 1. Asc and Desc (Write logic for that)
@@ -74,7 +72,7 @@ export default {
       searchSelected: '',
       fields: ['Requestor', 'TicketType', 'FiledAgainst', 'Severity', 'Priority', 'daysOpen', 'Actions'],
       limit: 20,
-      options: [
+      selectOptions: [
             { value: '', text: 'None' },
             { value: 'ticket', text: 'ID' },
             { value: 'category', text: 'Category' },
@@ -83,7 +81,7 @@ export default {
             { value: 'TicketType', text: 'Type' },
             { value: 'daysOpen', text: 'Days Open' }
           ],
-          sortOrders:[
+          sortOptions:[
             { value: '1', text: 'Asc' },
             { value: '-1', text: 'Desc' }
           ]
