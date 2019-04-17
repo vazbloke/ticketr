@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM python:3.7.1-slim
+FROM python:3.6.5-slim
 
 # Set the working directory to /app
 WORKDIR /app
@@ -12,9 +12,6 @@ RUN pip install flask requests flask-cors pymongo
 
 # Make port 80 available to the world outside this container
 EXPOSE 5000
-
-# Define environment variable
-ENV NAME World
 
 # Run server.py when the container launches
 CMD ["python", "-u", "app.py"]

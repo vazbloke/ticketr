@@ -9,7 +9,8 @@ from flask import Flask, render_template, redirect, url_for, request, jsonify
 from pymongo import MongoClient
 import requests, json
 
-print("Hi")
+HOST = os.environ['DB_HOST']
+# HOST = 'mongodb://localhost:27017/'
 
 DEBUG = True
 
@@ -20,7 +21,8 @@ app.config.from_object(__name__)
 # enable CORS
 CORS(app)
 
-client = MongoClient('mongodb://localhost:27017/')
+# client = MongoClient('np-flask', 27017)
+client = MongoClient('mongodb://np-mongodb:27017/')
 db = client["northpark"]
 
 DATA = db["data"]
@@ -59,7 +61,7 @@ def get_all_data():
             pymongo_cursor = DATA.find(searchkey).sort(sortkey).skip(page_skip).limit(limit)
         else:
             pymongo_cursor = DATA.find(searchkey).skip(page_skip).limit(limit)
-        
+
         all_data = list(pymongo_cursor)
         for i in all_data:
             i["_id"] = str(i["_id"])

@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  np-vue:
+      build: client/
+      container_name: np-vue
+      environment:
+        - SERVER=np-flask
+      ports:
+        - 8080:8080
+
+  np-flask:
+      build: server/
+      container_name: np-flask
+      environment:
+        - DB_HOST=np-mongodb
+      ports:
+        - 5000:5000
+
+  np-mongodb:
+      build: db/
+      container_name: np-mongodb
+      ports:
+        - 27017:27017

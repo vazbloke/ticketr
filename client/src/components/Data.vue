@@ -9,8 +9,8 @@
                 <b-col>
                     <b-nav-form class="mt-0">
                         <b-input-group prepend="Sort By">
-                            <b-form-select @change="getData" v-model="sortSelected" :options="selectOptions" />
-                            <b-form-select @change="getData" v-model="sortOrder" :options="sortOptions" />
+                            <b-form-select @change="changedValue" v-model="sortSelected" :options="selectOptions" />
+                            <b-form-select @change="changedValue" v-model="sortOrder" :options="sortOptions" />
                         </b-input-group>
                     </b-nav-form>
                 </b-col>
@@ -20,7 +20,7 @@
                             <b-form-select v-model="searchSelected" :options="selectOptions" />
                                 <b-input-group-append>
                                     <b-form-input v-model="searchValue" type="text" placeholder="Search Value"/>
-                                    <b-button @click="getData" variant="info">Search</b-button>
+                                    <b-button @click="changedValue" variant="info">Search</b-button>
                                 </b-input-group-append>
                         </b-input-group>
                     </b-nav-form>
@@ -82,8 +82,9 @@ export default {
             { value: 'daysOpen', text: 'Days Open' }
           ],
           sortOptions:[
-            { value: '1', text: 'Asc' },
-            { value: '-1', text: 'Desc' }
+            { value: '', text: 'Select' },
+            { value: '-1', text: 'Asc' },
+            { value: '1', text: 'Desc' }
           ]
     };
   },
@@ -92,7 +93,8 @@ export default {
   },
   methods: {
     getData() {
-      let path = `http://localhost:5000/ticketdata?&currentPage=${this.currentPage}&limit=${this.limit}` + 
+        var tmp = `http://localhost:5000`
+      let path = `http://np-flask:5000`+`/ticketdata?&currentPage=${this.currentPage}&limit=${this.limit}` + 
                 `&sortSelected=${this.sortSelected}&sortOrder=${this.sortOrder}` + 
                 `&searchSelected=${this.searchSelected}&searchValue=${this.searchValue}`;
       axios.get(path)
@@ -103,6 +105,9 @@ export default {
           // eslint-disable-next-line
           console.error(error);
         });
+    },
+    changedValue() {
+        this.getData();
     },
     updateData(payload, dataID) {
       const path = `http://localhost:5000/data/${dataID}`;
