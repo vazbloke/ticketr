@@ -6,8 +6,8 @@
 
         <b-collapse id="nav-collapse" is-nav>
             <b-navbar-nav>
-                <b-nav-item :to="{path:'/'}">Analytics</b-nav-item>
-                <b-nav-item :to="{path:'/data'}" disabled>Data</b-nav-item>
+                <b-nav-item class="nav-item" :to="{path:'/'}">Analytics</b-nav-item>
+                <b-nav-item  :to="{path:'/data'}" >Data</b-nav-item>
             </b-navbar-nav>
 
             <!-- Right aligned nav items -->

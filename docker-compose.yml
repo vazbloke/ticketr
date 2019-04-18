@@ -22,3 +22,7 @@ services:
       container_name: np-mongodb
       ports:
         - 27017:27017
+
+networks:
+ default:
+  name: web_dev

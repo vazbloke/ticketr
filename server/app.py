@@ -1,16 +1,11 @@
-import os
-from bson import json_util, ObjectId
+import requests, json, os
 
-# import stripe
-from flask import Flask, jsonify, request
+from bson import json_util, ObjectId
+from flask import Flask, render_template, redirect, url_for, request, jsonify
 from flask_cors import CORS
 
-from flask import Flask, render_template, redirect, url_for, request, jsonify
 from pymongo import MongoClient
-import requests, json
 
-HOST = os.environ['DB_HOST']
-# HOST = 'mongodb://localhost:27017/'
 
 DEBUG = True
 
@@ -22,11 +17,27 @@ app.config.from_object(__name__)
 CORS(app)
 
 # client = MongoClient('np-flask', 27017)
-client = MongoClient('mongodb://np-mongodb:27017/')
+
+print("Connecting to db...")
+client = MongoClient('mongodb://localhost:27017/')
 db = client["northpark"]
+
+collist = db.list_collection_names()
+if "data" in collist:
+    db.data.drop()
+if "user" in collist:
+    db.user.drop()
 
 DATA = db["data"]
 USER = db["user"]
+
+with open("jsondata/Sample Data.json") as f:
+    datadata = json.load(f)
+DATA.insert_many(datadata)
+
+with open("jsondata/User.json") as f:
+    userdata = json.load(f)
+USER.insert_many(userdata)
 
 
 @app.route('/ping', methods=['GET'])
@@ -52,20 +63,21 @@ def get_all_data():
         sortSelected, searchSelected, searchValue = \
             request.args.get('sortSelected'), request.args.get('searchSelected'), request.args.get('searchValue')
         limit, searchkey = int(request.args.get('limit')), {}
-        page_skip = int(request.args.get('currentPage'))*limit
+        sortkey = [('ticket',1)]
+        page_skip = (int(request.args.get('currentPage'))-1)*limit
         if(not(searchSelected == '' or searchValue == '')):
             searchkey = {searchSelected:searchValue}
         
         if(sortSelected != ''):
             sortkey = [(sortSelected,int(request.args.get('sortOrder')))]
-            pymongo_cursor = DATA.find(searchkey).sort(sortkey).skip(page_skip).limit(limit)
-        else:
-            pymongo_cursor = DATA.find(searchkey).skip(page_skip).limit(limit)
 
-        all_data = list(pymongo_cursor)
+        all_data = list(DATA.find(searchkey).sort(sortkey))
+        # test.skip(page_skip).limit(limit))
+        total_items = len(all_data)
         for i in all_data:
             i["_id"] = str(i["_id"])
-        response_object['ticket_data'] = all_data
+        response_object['ticket_data'] = all_data[page_skip:page_skip+limit]
+        response_object['total_items'] = total_items
     else:
         post_data = request.get_json()
         new_item = json.loads(post_data)
@@ -76,4 +88,5 @@ def get_all_data():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    # app.run(host='0.0.0.0', port=5000, threaded=True)
+    app.run()

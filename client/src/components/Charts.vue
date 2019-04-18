@@ -5,50 +5,9 @@
         <div class="container">
             <br>
             <h2>Data</h2>
-            <b-row>
-                <b-col>
-                    <b-nav-form class="mt-0">
-                        <b-input-group prepend="Sort By">
-                            <b-form-select v-model="sortSelected" :options="selectOptions" />
-                            <b-form-select v-model="sortOrder" :options="sortOptions" />
-                            <b-input-group-append>
-                                <b-button  @click="sortOrSearch" variant="info">Sort</b-button>
-                            </b-input-group-append>
-                        </b-input-group>
-                    </b-nav-form>
-                </b-col>
-                <b-col>
-                    <b-nav-form class="mt-0">
-                        <b-input-group prepend="Filter" class="float-right">
-                            <b-form-select v-model="searchSelected" :options="selectOptions" />
-                            <b-form-input v-model="searchValue" type="text" placeholder="Search Value"/>
-                            <b-input-group-append>
-                                <b-button  @click="sortOrSearch" variant="info">Search</b-button>
-                            </b-input-group-append>
-                        </b-input-group>
-                    </b-nav-form>
-                </b-col>
-            </b-row>
-            <div class="row">
-                <div class="col-sm-10">
-                    <br>
-                    <div>
-                        <b-table striped hover :items="ticket_data" :fields="fields">
-                            <template slot="Actions" slot-scope="row">
-                                <b-button size="sm" @click="row.toggleDetails">
-                                {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
-                                </b-button>
-                            </template>
-                        </b-table>
-                        <p v-if="empty_records" class="text-center">No results matching search criteria.</p>
-                    </div>
-                </div>
-            </div>
-            <b-row class="mt-1">
-                <b-col lg="12" md="6" class="my-1">
-                    <b-pagination v-if="!empty_records" :total-rows="number_records" :per-page="limit" @change="changePage" v-model="currentPage" align="right" class="my-0" />
-                </b-col>
-            </b-row>
+            
+            <!-- <LineChart :data=this.onDeleteData /> -->
+            <LineChart :chartData=chartData :chartOptions=chartOptions />
         </div>
         <!-- <BaseFooter /> -->
     </div>
@@ -57,11 +16,27 @@
 <script>
 import axios from 'axios';
 import BaseNavbar from './BaseNavbar';
+import LineChart from './LineChart.js';
 // import BaseFooter from './BaseFooter';
 
 export default {
   data() {
     return {
+        chartData: {
+      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+      datasets: [
+        {
+          label: 'Data One',
+          backgroundColor: '#FC2525',
+          data: [40, 39, 10, 40, 39, 80, 40]
+        },{
+          label: 'Data Two',
+          backgroundColor: '#05CBE1',
+          data: [60, 55, 32, 10, 2, 12, 53]
+        }
+      ]
+    },
+    chartOptions: {responsive: true, maintainAspectRatio: false},
       ticket_data: [],
       editForm: {
         _id: '',
@@ -101,6 +76,7 @@ export default {
   },
   components: {
     BaseNavbar: BaseNavbar,
+    LineChart: LineChart,
   },
   methods: {
     getData() {

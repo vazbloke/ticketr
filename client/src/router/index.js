@@ -3,6 +3,7 @@ import Router from 'vue-router';
 import Ping from '@/components/Ping';
 import Data from '@/components/Data';
 import login from '@/components/login';
+import Charts from '@/components/Charts';
 
 Vue.use(Router);
 
@@ -22,6 +23,11 @@ export default new Router({
       path: '/login',
       name: 'login',
       component: login,
+    },
+    {
+      path: '/charts',
+      name: 'charts',
+      component: Charts,
     },
     {
       path: '*',
