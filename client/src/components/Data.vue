@@ -7,7 +7,7 @@
             <h2>Data</h2>
             <b-row>
                 <b-col>
-                    <b-nav-form class="mt-0">
+                    <b-nav-form class="mt-c" style="color">
                         <b-input-group prepend="Sort By">
                             <b-form-select v-model="sortSelected" :options="selectOptions" />
                             <b-form-select v-model="sortOrder" :options="sortOptions" />
@@ -30,7 +30,7 @@
                 </b-col>
             </b-row>
             <div class="row">
-                <div class="col-sm-10">
+                <div class="col-sm-12">
                     <br>
                     <div>
                         <b-table striped hover :items="ticket_data" :fields="fields">
@@ -44,9 +44,9 @@
                     </div>
                 </div>
             </div>
-            <b-row class="mt-1">
-                <b-col lg="12" md="6" class="my-1">
-                    <b-pagination v-if="!empty_records" :total-rows="number_records" :per-page="limit" @change="changePage" v-model="currentPage" align="right" class="my-0" />
+            <b-row class="mt-0">
+                <b-col lg="12" md="6" class="mt-0">
+                    <b-pagination v-if="!empty_records" :total-rows="number_records" :per-page="limit" @change="changePage" v-model="currentPage" align="right" class="mt-0" />
                 </b-col>
             </b-row>
         </div>
@@ -58,30 +58,22 @@
 import axios from 'axios';
 import BaseNavbar from './BaseNavbar';
 // import BaseFooter from './BaseFooter';
+import { store } from "./store.js";
 
 export default {
   data() {
     return {
       ticket_data: [],
-      editForm: {
-        _id: '',
-        Requestor: '',
-        ITOwner: '',
-        FiledAgainst: '',
-        Severity: [],
-        Priority: '',
-      },
       empty_records: false,
       number_records:0,
       currentPage: 1,
-      message: '',
       showMessage: false,
       limit: 20,
       sortSelected: '',
-      sortOrder: 1, // -1 and 1. Asc and Desc (Write logic for that)
+      sortOrder: 1,
       searchValue: '',
       searchSelected: '',
-      fields: ['ticket', 'Requestor', 'TicketType', 'FiledAgainst', 'Severity', 'Priority', 'daysOpen', 'Actions'],
+      fields: ['ticket', 'Ticket Creation Date', 'TicketType', 'Priority', 'daysOpen', 'FiledAgainst', 'Severity', 'Actions'],
       limit: 20,
       selectOptions: [
             { value: '', text: 'None' },
@@ -104,8 +96,9 @@ export default {
   },
   methods: {
     getData() {
-        // var tmp = `http://localhost:5000`
-      let path = `http://localhost:5000`+`/ticketdata?&currentPage=${this.currentPage}&limit=${this.limit}` + 
+        // var rooturl = `http://np-flask:5000`
+        var rooturl = `http://localhost:5000`
+      let path = rooturl+`/ticketdata?&currentPage=${this.currentPage}&limit=${this.limit}` + 
                 `&sortSelected=${this.sortSelected}&sortOrder=${this.sortOrder}` + 
                 `&searchSelected=${this.searchSelected}&searchValue=${this.searchValue}`;
       axios.get(path)
@@ -121,9 +114,6 @@ export default {
           console.error(error);
         });
     },
-    changedValue() {
-        this.getData();
-    },
     changePage(value) {
         this.currentPage= value;
         this.getData();
@@ -132,89 +122,20 @@ export default {
         this.currentPage = 1;
         this.getData();
     },
-    // updateData(payload, dataID) {
-    //   const path = `http://localhost:5000/data/${dataID}`;
-    //   axios.put(path, payload)
-    //     .then(() => {
-    //       this.getData();
-    //       this.message = 'Data updated!';
-    //       this.showMessage = true;
-    //     })
-    //     .catch((error) => {
-    //       // eslint-disable-next-line
-    //       console.error(error);
-    //       this.getData();
-    //     });
-    // },
-    // removeData(dataID) {
-    //   const path = `http://localhost:5000/books/${dataID}`;
-    //   axios.delete(path)
-    //     .then(() => {
-    //       this.getData();
-    //       this.message = 'Data removed!';
-    //       this.showMessage = true;
-    //     })
-    //     .catch((error) => {
-    //       // eslint-disable-next-line
-    //       console.error(error);
-    //       this.getData();
-    //     });
-    // },
-    initForm() {
-      this.editForm._id = '';
-      this.editForm.Requestor = '';
-      this.editForm.ITOwner = '';
-      this.editForm.FiledAgainst = '';
-      this.editForm.Severity = [];
-      this.editForm.Priority = '';
-    },
-    // onSubmit(evt) {
-    //   evt.preventDefault();
-    //   this.$refs.addBookModal.hide();
-    //   let read = false;
-    //   if (this.addBookForm.read[0]) read = true;
-    //   const payload = {
-    //     title: this.addBookForm.title,
-    //     author: this.addBookForm.author,
-    //     read, // property shorthand
-    //     price: this.addBookForm.price,
-    //   };
-    //   this.addBook(payload);
-    //   this.initForm();
-    // },
-    onSubmitUpdate(evt) {
-      evt.preventDefault();
-      this.$refs.editDataModal.hide();
-      const payload = {
-        _id: this.editForm._id,
-        Requestor:this.editForm.Requestor,
-        ITOwner:this.editForm.ITOwner,
-        FiledAgainst:this.editForm.FiledAgainst,
-        Severity:this.editForm.Severity,
-        Priority:this.editForm.Priority,
-      };
-      this.updateBook(payload, this.editForm._id);
-    },
-    // onReset(evt) {
-    //   evt.preventDefault();
-    //   this.$refs.addBookModal.hide();
-    //   this.initForm();
-    // },
-    onResetUpdate(evt) {
-      evt.preventDefault();
-      this.$refs.editDataModal.hide();
-      this.initForm();
-      this.getData(); // why?
-    },
-    onDeleteData(item) {
-      this.removeData(item._id);
-    },
-    editData(item) {
-      this.editForm = item;
-    },
   },
   created() {
-    this.getData();
+    if(store.state.logged_in) {
+        this.getData();
+    }
+    else {
+        this.$router.push('login')
+    }
   },
 };
 </script>
+
+<style>
+    /* .bg-info {
+    background-color: #b85a17 !important;
+} */
+</style>

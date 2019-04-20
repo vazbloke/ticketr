@@ -8,7 +8,9 @@ services:
         - SERVER=np-flask
       ports:
         - 8080:8080
-
+      depends_on:
+        - np-flask
+        - np-mongodb
   np-flask:
       build: server/
       container_name: np-flask
@@ -16,13 +18,17 @@ services:
         - DB_HOST=np-mongodb
       ports:
         - 5000:5000
+      depends_on:
+        - np-mongodb
 
   np-mongodb:
       build: db/
       container_name: np-mongodb
+      volumes:
+        - ./data/db:/usr/data/db
       ports:
         - 27017:27017
+      command: mongod --smallfiles --logpath=/dev/null # --quiet
 
 networks:
  default:
-  name: web_dev
