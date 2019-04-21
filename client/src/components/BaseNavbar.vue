@@ -12,10 +12,11 @@
 
             <!-- Right aligned nav items -->
             <b-navbar-nav class="ml-auto">
-
+                <img src="@/assets/baseline-person-24px.svg"/>
                 <b-nav-item-dropdown right>
+                
                 <!-- Using 'button-content' slot -->
-                <template slot="button-content"><em>{{this.logged_user.charAt(0).toUpperCase() + this.logged_user.slice(1)}}</em></template>
+                <template slot="button-content">{{this.logged_user.charAt(0).toUpperCase() + this.logged_user.slice(1)}}</template>
                 <b-dropdown-item >Profile</b-dropdown-item>
                 <b-dropdown-item @click="logout">Sign Out</b-dropdown-item>
                 </b-nav-item-dropdown>

@@ -5,9 +5,8 @@
         <div class="container">
             <br>
             <h2>Data</h2>
-            
-            <!-- <LineChart :data=this.onDeleteData /> -->
             <LineChart :chartData=chartData :chartOptions=chartOptions></LineChart>
+            <BarChart></BarChart>
         </div>
         <!-- <BaseFooter /> -->
     </div>
@@ -16,12 +15,16 @@
 <script>
 import axios from 'axios';
 import BaseNavbar from './BaseNavbar';
-import LineChart from './LineChart.js';
+import LineChart from './BaseLinechart';
+// import BarChart from './BarChart.js';
+import BarChart from './BaseBarchart';
+import PieChart from './BasePiechart';
 // import BaseFooter from './BaseFooter';
 
 export default {
   data() {
     return {
+        pie_data: {},
         chartData: {
       labels: [
         0,
@@ -73,7 +76,8 @@ export default {
       datasets: [
         {
           label: 'Days Open',
-          backgroundColor: '#FC2525',
+        //   backgroundColor: '#FC2525',
+          pointBackgroundColor: '#FC2525',
           data: [
         6107,
         1957,
@@ -129,25 +133,42 @@ export default {
     };
   },
   components: {
-    BaseNavbar: BaseNavbar,
-    LineChart: LineChart,
+    BaseNavbar,
+    LineChart,
+    BarChart,
   },
   methods: {
-    getChartData() {
-    //   let path = `http://localhost:5000`+`/chartdata?&item=${this.item}`;
+    getLineChartData() {
+      let path = `http://localhost:5000`+`/chartdata?&item=${this.item}&type=line`;
 
-    //   axios.get(path)
-    //     .then((res) => {
-    //       this.ticket_data = res.data.ticket_data;
-    //       this.number_records = res.data.total_items
+      axios.get(path)
+        .then((res) => {
+          this.ticket_data = res.data.ticket_data;
+          this.number_records = res.data.total_items
           
-    //       this.empty_records = (this.number_records ? false:true);
+          this.empty_records = (this.number_records ? false:true);
           
-    //     })
-    //     .catch((error) => {
-    //       // eslint-disable-next-line
-    //       console.error(error);
-    //     });
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error);
+        });
+    },
+    getPieChartData() {
+      let path = `http://localhost:5000`+`/chartdata?&item=${this.item}&type=pie`;
+
+      axios.get(path)
+        .then((res) => {
+          this.ticket_data = res.data.ticket_data;
+          this.number_records = res.data.total_items
+          
+          this.empty_records = (this.number_records ? false:true);
+          
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error);
+        });
     },
     changedValue() {
         this.getData();

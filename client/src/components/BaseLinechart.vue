@@ -1,3 +1,5 @@
+<script>
+
 import {Line} from 'vue-chartjs'
 
 export default {
@@ -7,3 +9,7 @@ export default {
     this.renderChart(this.chartData, this.chartOptions)
   }
 }
+</script>
+
+<style>
+</style>

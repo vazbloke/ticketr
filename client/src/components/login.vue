@@ -5,7 +5,7 @@
     <b-row style="margin-top:25vh">
       <b-col>
         <div class="text-center">
-          <!-- <img src="https://www.npinnovations.com/wp-content/uploads/2016/05/North-Park-sm.png" width="20%"/> -->
+          <h3>Login</h3>
         </div>
       </b-col>
     </b-row>

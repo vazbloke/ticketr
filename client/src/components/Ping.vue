@@ -6,6 +6,7 @@
 
 <script>
 import axios from 'axios';
+import { store } from "./store.js";
 
 export default {
   name: 'Ping',
@@ -16,7 +17,7 @@ export default {
   },
   methods: {
     getMessage() {
-      const path = 'http://localhost:5000/ping';
+      const path = store.server_url + '/ping';
       axios.get(path)
         .then((res) => {
           this.msg = res.data;

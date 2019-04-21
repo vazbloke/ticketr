@@ -16,11 +16,9 @@ app.config.from_object(__name__)
 # enable CORS
 CORS(app)
 
-# client = MongoClient('mongodb://np-mongodb:27017')
+DB_URL = 'mongodb://localhost:27017/'
 
-print("Connecting to db...")
-client = MongoClient('mongodb://localhost:27017/')
-print("done")
+client = MongoClient(DB_URL)
 db = client["northpark"]
 
 collist = db.list_collection_names()
@@ -58,12 +56,29 @@ def login():
     print(response_object)
     return response_object
 
+@app.route('/distinct', methods=['GET'])
+def distinct_items():
+    result = []
+    response_object = {'status': 'success'}
+    field = request.args.get('field')
+    distinct_items = sorted(DATA.distinct(field))
+    result.append({'value':'', 'text':'Select Value'})
+    for item in distinct_items:
+        result.append({'value':item, 'text':item})
+    response_object['value_options'] = result
+    return jsonify(response_object)
+
 @app.route('/ticketdata', methods=['GET', 'POST'])
 def get_all_data():
     response_object = {'status': 'success'}
     if request.method == 'GET':
         sortSelected, searchSelected, searchValue = \
             request.args.get('sortSelected'), request.args.get('searchSelected'), request.args.get('searchValue')
+        if(searchSelected in ['ticket', 'Requestor', 'ITOwner', 'daysOpen'] and searchValue != ''):
+            try:
+                searchValue = int(searchValue)
+            except:
+                searchValue = -1
         limit, searchkey = int(request.args.get('limit')), {}
         sortkey = [('ticket',1)]
         page_skip = (int(request.args.get('currentPage'))-1)*limit
@@ -100,6 +115,12 @@ def chart_data():
     response_object['data_list'] = data_list
     return jsonify(response_object)
 
+@app.route('/delete/<id>', methods=['DELETE'])
+def delete_row(id):
+    response_object = {'status': 'success'}
+    DATA.remove( {"_id": ObjectId(id)})
+    response_object['message'] = 'Row removed!'
+    return jsonify(response_object)
 
 if __name__ == '__main__':
     # app.run(host='0.0.0.0', port=5000, threaded=True)
