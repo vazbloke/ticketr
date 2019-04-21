@@ -2,6 +2,7 @@ export const store = {
     state: {
       logged_in: false,
       logged_user: '',
+      unauth_attempt: false
     },
     server_url: `http://localhost:5000`,
     logIn(username) {

@@ -1,13 +1,36 @@
 <template>
     <div>
         <BaseNavbar />
-        
         <div class="container">
             <br>
-            <h2>Data</h2>
-            <LineChart :chartData=chartData :chartOptions=chartOptions></LineChart>
-            <BarChart></BarChart>
+            <h3>Analytics report</h3>
+            <br>
+            <b-card>
+              <b-row>
+                <b-col>
+                  <h4> This is some gourmet shit!</h4>
+                </b-col>
+              </b-row>
+              <b-row>
+                <b-col>
+                  <LineChart :chartData=chartData :chartOptions=chartOptions></LineChart>
+                </b-col>
+                <b-col>
+                </b-col>
+              </b-row>
+              <b-row>
+              <b-col lg="4">
+                <PieChart></PieChart>
+              </b-col>
+              </b-row>
+              <b-row>
+                <b-col lg=6>
+              <BarChart></BarChart>
+                </b-col>
+              </b-row>
+            </b-card>
         </div>
+        <br>
         <!-- <BaseFooter /> -->
     </div>
 </template>
@@ -16,7 +39,6 @@
 import axios from 'axios';
 import BaseNavbar from './BaseNavbar';
 import LineChart from './BaseLinechart';
-// import BarChart from './BarChart.js';
 import BarChart from './BaseBarchart';
 import PieChart from './BasePiechart';
 // import BaseFooter from './BaseFooter';
@@ -136,6 +158,7 @@ export default {
     BaseNavbar,
     LineChart,
     BarChart,
+    PieChart,
   },
   methods: {
     getLineChartData() {
@@ -145,7 +168,6 @@ export default {
         .then((res) => {
           this.ticket_data = res.data.ticket_data;
           this.number_records = res.data.total_items
-          
           this.empty_records = (this.number_records ? false:true);
           
         })

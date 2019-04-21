@@ -6,17 +6,15 @@ export default {
   extends: Bar,
   data() { 
       return {
-    chartdata: {
       datacollection: {
-        labels: ['January', 'February'],
+        labels: ['January', 'February', 'March'],
         datasets: [
           {
             label: 'Data One',
             backgroundColor: '#f87979',
-            data: [40, 20]
+            data: [40, 20, 10]
           }
         ]
-      }
     },
     options: {
       responsive: true,

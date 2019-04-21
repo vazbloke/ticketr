@@ -38,6 +38,10 @@ with open("jsondata/User.json") as f:
     userdata = json.load(f)
 USER.insert_many(userdata)
 
+DATA.update_many( {}, { "$rename": { "ticket": "Ticket ID" } } )
+DATA.update_many( {}, { "$rename": { "Ticket Creation Date": "Date created" } } )
+DATA.update_many( {}, { "$rename": { "TicketType": "Type" } } )
+
 @app.route('/ping', methods=['GET'])
 def ping_pong():
     return jsonify('pong!')

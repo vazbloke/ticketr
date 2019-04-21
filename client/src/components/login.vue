@@ -5,7 +5,7 @@
     <b-row style="margin-top:25vh">
       <b-col>
         <div class="text-center">
-          <h3>Login</h3>
+          <h3 class="logo-font">Ticketr</h3>
         </div>
       </b-col>
     </b-row>
@@ -27,6 +27,7 @@
           <b-row style="margin-top:2vh">
             <b-col>
                 <p style="color:#d32f2f;" class="text-center" v-if="loginError" >Invalid credentials</p>
+                <p style="color:#d32f2f;" class="text-center" v-else-if="unauth" >Log in to access page</p>
             </b-col>
           </b-row>
         </b-card>
@@ -45,7 +46,8 @@
         return {
           loginError:false,
           username:'',
-          password:''
+          password:'',
+          unauth:false
         }
       },
       methods:{
@@ -54,14 +56,14 @@
                 username:this.username,
                 password:this.password
             }
-            axios.post(`http://localhost:5000/login`,loginData)
+            axios.post(store.server_url +`/login`,loginData)
             .then(response => {
               if(response.status == 200){
                   this.loginError = false;
+                  store.state.unauth_attempt = false;
                   store.state.logged_in = true;
                   store.state.logged_user = loginData.username;
-                  this.$router.push({path:'data'});
-                //   this.$store.commit('login',this.userId);
+                  this.$router.push({path:'tickets'});
               }
               else {
                   this.loginError = true;
@@ -70,7 +72,6 @@
             .catch(e => {
               if(e.response.status == 401){
                   this.loginError = true;
-                //   this.error = e.response.data.data;
               }
             })
         },
@@ -81,17 +82,25 @@
       },
       created() {
         if(store.state.logged_in) {
-            this.$router.push('data')
+          store.state.unauth_attempt = false;
+          this.unauth = false;
+            this.$router.push('tickets')
         }
+        else if(store.state.unauth_attempt) {
+            this.unauth = true;
+        }
+
     },
   }
 </script>
 
 <style scoped>
-  .login-error{
-      background-color:'red'
-  }
-  .btn-nptheme { 
+
+.logo-font {
+    font-weight: 575;
+}
+
+.btn-nptheme { 
   color: #ffffff; 
   background-color: #4F91CD; 
   border-color: #4683BD; 
