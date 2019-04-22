@@ -5,7 +5,7 @@ FROM python:2.7-slim
 WORKDIR /app
 
 # Copy the current directory contents into the container at /app
-COPY app.py /app
+COPY . /app
 
 # Install any needed packages specified in requirements.txt
 RUN pip install --upgrade pip

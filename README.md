@@ -1,45 +1,36 @@
-# Developing a Single Page App with Flask and Vue.js
+# Ticketr
 
-### Want to learn how to build this?
+### A ticket management and analysis app built using Vue.js, Flask, and MongoDB
 
-Check out the posts:
 
-1. [Developing a Single Page App with Flask and Vue.js](https://testdriven.io/developing-a-single-page-app-with-flask-and-vuejs)
-1. [Accepting Payments with Stripe, Vue.js, and Flask](https://testdriven.io/accepting-payments-with-stripe-vuejs-and-flask)
+## Instructions to run:
 
-## Want to use this project?
+1. MongoDB
 
-1. Fork/Clone
+..* Install the latest version of [MongoDB](https://www.mongodb.com/)
 
-1. Sign up for [Stripe](https://stripe.com/) (if you don't already have an account).
-
-1. Set the Stripe Secret [key](https://stripe.com/docs/keys) as an environment variable:
-
-    ```sh
-    $ cd server
-    $ export STRIPE_SECRET_KEY=UPDATE_ME
+..* ```sh
+    mongodb
     ```
 
-1. Run the server-side Flask app in one terminal window:
+2. Flask
 
-    ```sh
-    $ cd server
-    $ python3.6 -m venv env
-    $ source env/bin/activate
-    (env)$ pip install -r requirements.txt
-    (env)$ python app.py
+..* Install Python 3.6.5 and pip3
+
+..* ```sh
+    cd server
+    pip3 install -r requirements.txt
+    python3 app.py
     ```
 
-    Navigate to [http://localhost:5000](http://localhost:5000)
+3. Vue.js client
 
-1. Update `stripePublishableKey` with the Stripe Publishable [key](https://stripe.com/docs/keys) in *client/src/components/Order.vue*.
+..* Install Node.js v11.12.0 and npm 6.7.0
 
-1. Run the client-side Vue app in a different terminal window:
-
-    ```sh
-    $ cd client
-    $ npm install
-    $ npm run dev
+..* ```sh
+    cd client
+    npm install
+    npm run dev
     ```
 
-    Navigate to [http://localhost:8080](http://localhost:8080)
+4. Navigate to [http://localhost:8080](http://localhost:8080)
