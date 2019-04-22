@@ -1,5 +1,10 @@
 # Ticketr
 
+
+<div align="center">
+    <img src="/client/static/android-chrome-192x192.png" width="200px" class="center"</img> 
+</div>
+
 Ticketr is a ticket management and analysis app built using Vue.js, Flask, and MongoDB.
 
 Video demo link: [https://youtu.be/HT4ItiowiSc](https://youtu.be/HT4ItiowiSc)
