@@ -3,61 +3,32 @@ import requests, json, os
 from bson import json_util, ObjectId
 from flask import Flask, render_template, redirect, url_for, request, jsonify
 from flask_cors import CORS
-
 from pymongo import MongoClient
 from datetime import datetime
+
+from mongo_wrapper import import_data, initialize_db
+import config
 
 DEBUG = True
 
 # instantiate the app
 app = Flask(__name__)
 app.config.from_object(__name__)
-
-# enable CORS
 CORS(app)
 
-DB_URL = 'mongodb://localhost:27017/'
+# setup mongo
+mongo_client = MongoClient(config.DB_SERVER)
+db = mongo_client[config.DB_NAME]
+initialize_db(db)
 
-client = MongoClient(DB_URL)
-db = client["northpark"]
-
-collist = db.list_collection_names()
-if "data" in collist:
-    db.data.drop()
-if "user" in collist:
-    db.user.drop()
-
+# import data into data and user collections
 DATA = db["data"]
 USER = db["user"]
-
-with open("jsondata/Sample Data.json") as f:
-    datadata = json.load(f)
-
-print("Reading user data...")
-with open("jsondata/User.json") as f:
-    userdata = json.load(f)
-USER.insert_many(userdata)
-
-records = []
-print("Reading ticket data...")
-for entry in datadata:
-    if entry['Ticket Creation Date']:
-        date = datetime.strptime(entry['Ticket Creation Date'], "%m/%d/%Y")
-        date = date.isoformat()
-        entry['date'] = date
-    entry["Ticket ID"] = entry["ticket"]
-    entry["Date created"] = entry["Ticket Creation Date"]
-    entry["Type"] = entry["TicketType"]
-    entry.pop('ticket', None)
-    entry.pop('Ticket Creation Date', None)
-    entry.pop('TicketType', None)
-    records.append(entry)
-
-DATA.insert_many(records)
+import_data(USER, DATA)
 
 @app.route('/ping', methods=['GET'])
 def ping_pong():
-    return jsonify('pong!')
+    return jsonify('pong')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -101,7 +72,7 @@ def get_all_data():
     if(not(searchSelected == '' or searchValue == '')):
         searchkey = {searchSelected:searchValue}
     
-    if(sortSelected != ''):
+    if(sortSelected != '' and sortSelected!='0'):
         sortkey = [(sortSelected,int(request.args.get('sortOrder')))]
 
     all_data = list(DATA.find(searchkey).sort(sortkey).skip(page_skip).limit(limit))
@@ -129,11 +100,11 @@ def single_chart():
     temp_obj['label'] = item
 
     if(item == 'Satisfaction'):
-        temp_obj['backgroundColor'] = ["#FF9F40", "#FFCD56","#FF6383","#4BC0C0","#36A2EB"]
+        temp_obj['backgroundColor'] = config.COLORS.singleChart.satisfaction
     elif(item == 'Priority'):
-        temp_obj['backgroundColor'] = ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"]
+        temp_obj['backgroundColor'] = config.COLORS.singleChart.priority
     else:
-        temp_obj['backgroundColor'] = ["#E46651", "#41B883", "#00D8FF", "#33B5E5"]
+        temp_obj['backgroundColor'] = config.COLORS.singleChart.other
     robject['labels'] = label_list
     datasets.append(temp_obj)
     robject['datasets'] = datasets
@@ -149,7 +120,7 @@ def dual_chart():
     cat_by = request.args.get('cat_by')
     print(item)
     datasets = []
-    colorlist = ["#9966FE", "#FFCD56", "#41B883", "#E46651", "#00D8FF", "#33B5E5"]
+    colorlist = config.COLORS.dualChart
     for i, cat in enumerate(sorted(DATA.find({}).distinct(cat_by))):
         label_list, data_list = [], []
         temp_obj = {}
@@ -187,6 +158,7 @@ def delete_row(id):
     return jsonify(response_object)
 
 if __name__ == '__main__':
+
+    # Enable line below for Docker 
     # app.run(host='0.0.0.0', port=5000, threaded=True)
-    app.run(host='0.0.0.0')
-    # app.run()
+    app.run(host='0.0.0.0', debug=True)

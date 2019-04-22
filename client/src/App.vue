@@ -6,12 +6,12 @@
 
 <script>
 export default {
-  name: 'App',
+  name: "App"
 };
 </script>
 
 <style>
 #app {
-  margin-top: 60px
+  margin-top: 60px;
 }
 </style>
