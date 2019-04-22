@@ -102,6 +102,7 @@
             <br>
             <b-row>
               <b-col>
+                <p> In the data, Requests have higher priorities than issues.
                 <p> There is one record that has no date (TicketID: 15865) </p>
               </b-col>
               <b-col  sm="6" lg="4" offset-lg="1" offset-sm="3">
