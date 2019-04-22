@@ -34,6 +34,7 @@ export default {
     },
   methods: {
       logout() {
+          store.state.logout_init = true;
           store.state.logged_in = false;
             store.state.logged_user = '';
           this.$router.push({path:'/'})
@@ -48,4 +49,11 @@ export default {
 .bg-info {
     background-color: #01479B !important;
 }
+.navbar-dark .navbar-brand:hover, .navbar-dark .navbar-brand:focus {
+    color: #ffd00e;
+}
+.navbar-brand {
+    color: #ffd00e;
+}
+
 </style>

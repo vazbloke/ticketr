@@ -10,7 +10,7 @@
       </b-col>
     </b-row>
     <b-row class="mt-4">
-      <b-col sm="12" lg="4" offset-lg="4">
+      <b-col sm="6" lg="4" offset-lg="4" offset-sm="3">
         <b-card class="p-3">
           <b-form @submit.prevent="onLogin">
             <b-form-group>
@@ -26,7 +26,8 @@
           </b-form>
           <b-row style="margin-top:2vh">
             <b-col>
-                <p style="color:#d32f2f;" class="text-center" v-if="loginError" >Invalid credentials</p>
+                <p style="color:#d32f2f;" class="text-center" v-if="logout_init" >You have been logged out.</p>
+                <p style="color:#d32f2f;" class="text-center" v-else-if="loginError" >Invalid credentials</p>
                 <p style="color:#d32f2f;" class="text-center" v-else-if="unauth" >Log in to access page</p>
             </b-col>
           </b-row>
@@ -47,11 +48,16 @@
           loginError:false,
           username:'',
           password:'',
-          unauth:false
+          unauth:store.state.unauth_attempt,
+          logout_init:store.state.logout_init
         }
       },
       methods:{
         onLogin(data){
+            this.logout_init = false;
+            store.state.logout_init = false;
+            this.unauth = false;
+            store.state.unauth_attempt = false;
             var loginData = {
                 username:this.username,
                 password:this.password
@@ -63,7 +69,7 @@
                   store.state.unauth_attempt = false;
                   store.state.logged_in = true;
                   store.state.logged_user = loginData.username;
-                  this.$router.push({path:'tickets'});
+                  this.$router.push(store.state.attempt_path);
               }
               else {
                   this.loginError = true;
@@ -81,6 +87,7 @@
         }
       },
       created() {
+        this.logout_init = store.state.logout_init;
         if(store.state.logged_in) {
           store.state.unauth_attempt = false;
           this.unauth = false;

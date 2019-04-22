@@ -1,13 +1,14 @@
 <script>
-import { Doughnut, mixins } from 'vue-chartjs'
+
+import { Bar, mixins } from 'vue-chartjs'
 const { reactiveProp } = mixins
 import axios from 'axios'
 import { store } from './store.js'
 
 export default {
-  extends: Doughnut,
+  extends: Bar,
   mixins: [reactiveProp],
-  props: ['field'],
+  props: ['field', 'cat_by'],
   data(){
     return {
       data: {
@@ -25,7 +26,7 @@ export default {
     }
   },
   mounted() {
-    var path = store.server_url + `/singlechart?&item=${this.field}`;
+    var path = store.server_url + `/dualchart?&item=${this.field}&cat_by=${this.cat_by}`;
     axios.get(path)
         .then((res) => {
           this.chartData = res.data.chart_data;
@@ -38,4 +39,6 @@ export default {
     this.renderChart(this.chartData);
   },
 }
+
+
 </script>

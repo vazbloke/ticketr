@@ -34,7 +34,7 @@
             <br>
             <b-row>
                 <b-col sm="12">
-                    <b-alert fade v-model="showDeletedAlert" variant="success" dismissible>
+                    <b-alert fade v-model="showDeletedAlert" variant="info" dismissible>
                             Ticket deleted!
                     </b-alert>
                 </b-col>
@@ -95,11 +95,12 @@ export default {
       searchValue: '',
       searchSelected: '',
       selectedRowId: '',
-      fields: ['Ticket ID', 'Date created', 'Type', 'Priority', 'daysOpen', 'FiledAgainst', 'Severity', 'Satisfaction'],
+      fields: ['Ticket ID', 'date', 'Type', 'Priority', 'daysOpen', 'FiledAgainst', 'Severity', 'Satisfaction'],
       limit: 20,
       selectOptions: [
             { value: '', text: 'None' },
             { value: 'Ticket ID', text: 'Ticket ID' },
+            { value: 'date', text: 'Date' },
             { value: 'Type', text: 'Type' },
             { value: 'Severity', text: 'Severity' },
             { value: 'Priority', text: 'Priority' },
@@ -111,7 +112,7 @@ export default {
             { value: 'FiledAgainst', text: 'Filed Against' }
           ],
           sortOptions:[
-            { value: '', text: 'Select' },
+            { value: '1', text: 'Select' },
             { value: '1', text: 'Asc' },
             { value: '-1', text: 'Desc' }
           ],
@@ -208,7 +209,9 @@ export default {
         this.getData();
     }
     else {
+        store.state.logout_init = false;
         store.state.unauth_attempt = true;
+        store.state.attempt_path = this.$route.path;
         this.$router.push('login');
     }
   },
@@ -218,8 +221,6 @@ export default {
 <style>
 
 .page-item.active .page-link{
-    /* background-color:#17a2b8;
-    border-color:#17a2b8; */
     background-color:#f7c600;
     border-color:#f7c600;
   }
