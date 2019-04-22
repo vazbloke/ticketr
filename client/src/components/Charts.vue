@@ -4,7 +4,9 @@
     <div class="container">
       <br>
       <b-row>
+        <b-col>
         <h3>Analytics report</h3>
+        </b-col>
       </b-row>
       <br>
       <b-card>

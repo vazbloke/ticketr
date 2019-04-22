@@ -3,7 +3,7 @@ export const store = {
     logged_in: false,
     logged_user: '',
     unauth_attempt: false,
-    attempt_path: '/tickets',
+    attempt_path: '/charts',
     logout_init: false,
   },
   server_url: `http://localhost:5000`,

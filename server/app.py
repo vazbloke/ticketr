@@ -6,10 +6,10 @@ from flask_cors import CORS
 from pymongo import MongoClient
 from datetime import datetime
 
-from mongo_wrapper import import_data, initialize_db
-import config
+from db_functions import import_data, initialize_db
 
-DEBUG = True
+DB_SERVER = 'mongodb://localhost:27017/'
+DB_NAME = "northpark"
 
 # instantiate the app
 app = Flask(__name__)
@@ -17,8 +17,8 @@ app.config.from_object(__name__)
 CORS(app)
 
 # setup mongo
-mongo_client = MongoClient(config.DB_SERVER)
-db = mongo_client[config.DB_NAME]
+mongo_client = MongoClient(DB_SERVER)
+db = mongo_client[DB_NAME]
 initialize_db(db)
 
 # import data into data and user collections
@@ -130,7 +130,6 @@ def dual_chart():
         temp_obj['data'] = data_list
         temp_obj['backgroundColor'] = colorlist[i]
         temp_obj['label'] = cat
-        # temp_obj['type'] = "line"
         datasets.append(temp_obj)
     robject['labels'] = label_list
     robject['datasets'] = datasets
@@ -166,6 +165,7 @@ def delete_row(id):
 
 if __name__ == '__main__':
 
+    app.run(host='0.0.0.0', debug=True)
     # Enable line below for Docker 
     # app.run(host='0.0.0.0', port=5000, threaded=True)
-    app.run(host='0.0.0.0', debug=True)
+

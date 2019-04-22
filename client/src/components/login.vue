@@ -120,7 +120,7 @@ export default {
     if (store.state.logged_in) {
       store.state.unauth_attempt = false;
       this.unauth = false;
-      this.$router.push("tickets");
+      this.$router.push("charts");
     } else if (store.state.unauth_attempt) {
       this.unauth = true;
     }
