@@ -1,23 +1,23 @@
 # Ticketr
 
-### A ticket management and analysis app built using Vue.js, Flask, and MongoDB
+A ticket management and analysis app built using Vue.js, Flask, and MongoDB
 
 
-## Instructions to run:
+### Instructions to run:
 
 1. MongoDB
 
-..* Install the latest version of [MongoDB](https://www.mongodb.com/)
+    * Install the latest version of [MongoDB](https://www.mongodb.com/)
 
-..* ```sh
-    mongodb
-    ```
+    *   ```
+        mongodb
+        ```
 
 2. Flask
 
-..* Install Python 3.6.5 and pip3
+    * Install Python 3.6.5 and pip3
 
-..* ```sh
+    * ```
     cd server
     pip3 install -r requirements.txt
     python3 app.py
@@ -25,9 +25,9 @@
 
 3. Vue.js client
 
-..* Install Node.js v11.12.0 and npm 6.7.0
+    * Install Node.js v11.12.0 and npm 6.7.0
 
-..* ```sh
+    * ```
     cd client
     npm install
     npm run dev

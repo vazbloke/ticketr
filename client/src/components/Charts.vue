@@ -9,24 +9,23 @@
       <br>
       <b-card>
         <div class="container">
-          <h4>General information</h4>
+          
           <b-row>
             <b-col>
-              This is some description of the graph on the left.
-              <b-button disabled variant="warning">Warning</b-button>
+              <br>
+              <h4>General information</h4>
+              <br>
+              There are a total of 25628 records.
+              <br>
               <div>
+                <br>
                 <b-alert show variant="success">
-                  <h4 class="alert-heading">Well done!</h4>
-                  <p>
-                    Aww yeah, you successfully read this important alert message. This example text is going to
-                    run a bit longer so that you can see how spacing within an alert works with this kind of
-                    content.
-                  </p>
-                  <hr>
                   <p
                     class="mb-0"
-                  >Whenever you need to, be sure to use margin utilities to keep things nice and tidy.</p>
+                  >A majority of the tickets are of type Request (74%).</p>
                 </b-alert>
+                <p>The numbers and plot points can be seen by hovering over the graph</p>
+                <p>Tickets can be viewed grouped by this or any other attribute in the Tickets tab</p>
               </div>
             </b-col>
             <b-col sm="6" lg="4" offset-lg="1" offset-sm="3">
@@ -42,43 +41,33 @@
               <BarChart :field="field2"></BarChart>
             </b-col>
             <b-col>
-              This is some description of the graph on the left.
-              <b-button disabled variant="warning">Warning</b-button>
+              The graph on the left shows the tickets grouped by Satisfaction. <br>
               <div>
-                <b-alert show variant="success">
-                  <h4 class="alert-heading">Well done!</h4>
-                  <p>
-                    Aww yeah, you successfully read this important alert message. This example text is going to
-                    run a bit longer so that you can see how spacing within an alert works with this kind of
-                    content.
+                <br>
+                <b-alert show variant="warning">
+                  <p class="mb-0">
+                    A majority of the tickets are of unknown satisfaction (31%)
                   </p>
-                  <hr>
-                  <p
-                    class="mb-0"
-                  >Whenever you need to, be sure to use margin utilities to keep things nice and tidy.</p>
                 </b-alert>
+                <p>Aside from those unknown, over 41% of the remaining tickets are highly satisfied. (28% of the whole data) </p>
               </div>
             </b-col>
           </b-row>
 
-          <h4>Priority</h4>
+          
           <b-row>
             <b-col>
-              This is some description of the graph on the left.
-              <b-button disabled variant="warning">Warning</b-button>
-              <div>
-                <b-alert show variant="success">
-                  <h4 class="alert-heading">Well done!</h4>
-                  <p>
-                    Aww yeah, you successfully read this important alert message. This example text is going to
-                    run a bit longer so that you can see how spacing within an alert works with this kind of
-                    content.
-                  </p>
-                  <hr>
+              <br><br>
+              <h4>Priority</h4>
+              <br>
+              The plot of the right shows fractions of tickets grouped by priority.
+              <div> <br>
+                <b-alert show variant="danger">
                   <p
                     class="mb-0"
-                  >Whenever you need to, be sure to use margin utilities to keep things nice and tidy.</p>
+                  >Over 30% of the tickets have not been assigned priority.</p>
                 </b-alert>
+                <br> <p> Of the remaining, a majority (51%) of the tickets are of high priority. (36% of the whole data)</p>
               </div>
             </b-col>
             <b-col sm="6" lg="4" offset-lg="1" offset-sm="3">
@@ -94,15 +83,31 @@
             <b-col lg="12">
               <LineChart :field="field"></LineChart>
             </b-col>
+            <b-col>
+              <p> The above plot shows the number of tickets grouped by the Days Open attribute.</p>
+              <p> 47% of the tickets have been open for over 5 days. The rest (53%) are between 0 and 5 days.</p>
+              <b-alert show variant="secondary">
+                  <p
+                    class="mb-0"
+                  >24% of the tickets have been open for zero days.</p>
+                </b-alert>
+            </b-col>
           </b-row>
 
           <br>
-          <h4>Additional</h4>
+          
           <br>
           <b-row>
             <b-col>
-              <p>In the data, Requests have higher priorities than issues.</p>
-              <p>There is one record that has no date (TicketID: 15865)</p>
+              <h4>Additional</h4>
+              <br>
+              <p>The graph on the right shows the priorities of tickets grouped by Ticket type.</p>
+              <br>
+              <b-alert show variant="info">
+                  <p
+                    class="mb-0"
+                  >There is one ticket that has no date (TicketID: 15865).</p>
+                </b-alert>
             </b-col>
             <b-col sm="6" lg="4" offset-lg="1" offset-sm="3">
               <BarChartDual :field="field1" :cat_by="cat_by"></BarChartDual>

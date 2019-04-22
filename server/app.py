@@ -100,11 +100,11 @@ def single_chart():
     temp_obj['label'] = item
 
     if(item == 'Satisfaction'):
-        temp_obj['backgroundColor'] = config.COLORS.singleChart.satisfaction
+        temp_obj['backgroundColor'] = ["#FF9F40", "#FFCD56","#FF6383","#4BC0C0","#36A2EB"]
     elif(item == 'Priority'):
-        temp_obj['backgroundColor'] = config.COLORS.singleChart.priority
+        temp_obj['backgroundColor'] = ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"]
     else:
-        temp_obj['backgroundColor'] = config.COLORS.singleChart.other
+        temp_obj['backgroundColor'] = ["#E46651", "#41B883", "#00D8FF", "#33B5E5"]
     robject['labels'] = label_list
     datasets.append(temp_obj)
     robject['datasets'] = datasets
@@ -120,7 +120,7 @@ def dual_chart():
     cat_by = request.args.get('cat_by')
     print(item)
     datasets = []
-    colorlist = config.COLORS.dualChart
+    colorlist = ["#9966FE", "#FFCD56", "#41B883", "#E46651", "#00D8FF", "#33B5E5"]
     for i, cat in enumerate(sorted(DATA.find({}).distinct(cat_by))):
         label_list, data_list = [], []
         temp_obj = {}
@@ -145,9 +145,16 @@ def line_chart():
     for label in sorted(DATA.find().distinct(item)):
         label_list.append(label)
         data_list.append(DATA.find({item:label}).count())
-    
-    response_object['label_list'] = label_list
-    response_object['data_list'] = data_list
+    robject, tmp_obj = {}, {}
+    robject['labels'] = label_list
+    datasets = []
+    tmp_obj['label'] = item
+    tmp_obj['backgroundColor'] = '#FF6383'
+    tmp_obj['pointBackgroundColor'] = '#FC2525'
+    tmp_obj['data'] = data_list
+    datasets.append(tmp_obj)
+    robject['datasets'] = datasets
+    response_object['chart_data'] = robject
     return jsonify(response_object)
 
 @app.route('/delete/<id>', methods=['DELETE'])
