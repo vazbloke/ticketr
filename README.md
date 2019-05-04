@@ -9,6 +9,10 @@ Ticketr is a ticket management and analysis app built using Vue.js, Flask, and M
 
 Video demo link: [https://youtu.be/HT4ItiowiSc](https://youtu.be/HT4ItiowiSc)
 
+![Screens 1](/screens/screen1.jpg)
+
+![Screens 2](/screens/screen2.jpg)
+
 ### Instructions to run:
 
 1. MongoDB
