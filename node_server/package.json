@@ -1,0 +1,21 @@
+{
+  "name": "node_server",
+  "version": "1.0.0",
+  "description": "Node and Express based server for Ticketr",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "author": "Aditya Manoharan",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.0",
+    "mongoose": "^5.5.11"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.0"
+  }
+}

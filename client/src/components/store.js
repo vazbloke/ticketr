@@ -6,7 +6,8 @@ export const store = {
     attempt_path: '/charts',
     logout_init: false,
   },
-  server_url: `http://localhost:5000`,
+  server_url: `http://localhost:3000`,
+  charts_server_url: `http://localhost:5000`,
   logIn(username) {
     this.state.logged_in = true;
     this.state.logged_user = username;
